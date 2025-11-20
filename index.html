@@ -3,28 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <title>マイ買い物リスト（V0.5）</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<style>
+  * {
+    box-sizing: border-box;
+  }
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    background: #f5f5f5;
+    -webkit-text-size-adjust: 100%; /* iOS の自動調整を抑制 */
+  }
 
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-      background: #f5f5f5;
-    }
-
-    .app {
-      max-width: 480px;
-      width: 100%;
-      margin: 0 auto;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      background: #ffffff;
-    }
+  .app {
+    max-width: 480px;
+    width: 100%;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+  }
 
     header {
       display: flex;
@@ -99,50 +100,48 @@
     }
 
     footer {
-      padding: 10px 16px 16px;
-      border-top: 1px solid #e0e0e0;
-      background: #fafafa;
-    }
+    padding: 10px 16px 16px;
+    border-top: 1px solid #e0e0e0;
+    background: #fafafa;
+  }
 
-    /* ▼ ここを変更：flex やめて「ボタンを右に重ねる」レイアウトに */
-    .add-row {
-      position: relative;
-      width: 100%;
-    }
+  .add-row {
+    display: flex;
+    width: 100%;
+    gap: 8px;
+    align-items: center;
+  }
 
-    .add-row input {
-      width: 100%;
-      padding: 8px;
+  .add-row input {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 8px;
+    font-size: 16px;        /* ★ 14px → 16px に変更（自動ズーム防止） */
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+
+  .add-row button {
+    flex: 0 0 auto;
+    padding: 8px 12px;
+    font-size: 16px;        /* 見た目を揃えるためにボタンも 16px に */
+    border-radius: 4px;
+    border: none;
+    background: #00c200;
+    color: #fff;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 320px) {
+    header h1 {
       font-size: 14px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      padding-right: 80px; /* ボタン分のスペースを確保（※ボタン幅に合わせて調整） */
     }
-
     .add-row button {
-      position: absolute;
-      top: 50%;
-      right: 4px;           /* 入力枠の内側に少し余白を残す */
-      transform: translateY(-50%);
-      padding: 6px 10px;
-      font-size: 14px;
-      border-radius: 4px;
-      border: none;
-      background: #00c200;
-      color: #fff;
-      cursor: pointer;
-      white-space: nowrap;
+      padding: 8px 8px;
+      font-size: 15px;
     }
-
-    @media (max-width: 320px) {
-      header h1 {
-        font-size: 14px;
-      }
-      .add-row button {
-        padding: 5px 8px;
-        font-size: 13px;
-      }
-    }
+  }
   </style>
 </head>
 <body>
@@ -286,4 +285,5 @@
   </script>
 </body>
 </html>
+
 
