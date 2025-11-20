@@ -99,7 +99,7 @@ async function refreshList() {
 // -----------------------------
 //  LIFF 初期化
 // -----------------------------
-liff.init({ liffId: "YOUR_LIFF_ID" })
+liff.init({ liffId: "2008535376-WXXwPnrX" })
   .then(() => {
     refreshList();
   });
