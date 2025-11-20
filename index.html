@@ -104,41 +104,42 @@
       background: #fafafa;
     }
 
+    /* ▼ ここを変更：flex やめて「ボタンを右に重ねる」レイアウトに */
     .add-row {
-      display: flex;
+      position: relative;
       width: 100%;
-      gap: 8px;
-      align-items: center;
     }
 
     .add-row input {
-      flex: 1 1 auto;
-      min-width: 0; /* はみ出し防止 */
+      width: 100%;
       padding: 8px;
       font-size: 14px;
       border-radius: 4px;
       border: 1px solid #ccc;
+      padding-right: 80px; /* ボタン分のスペースを確保（※ボタン幅に合わせて調整） */
     }
 
     .add-row button {
-      flex: 0 0 auto;
-      padding: 8px 12px;
+      position: absolute;
+      top: 50%;
+      right: 4px;           /* 入力枠の内側に少し余白を残す */
+      transform: translateY(-50%);
+      padding: 6px 10px;
       font-size: 14px;
       border-radius: 4px;
       border: none;
       background: #00c200;
       color: #fff;
       cursor: pointer;
-      white-space: nowrap; /* 折り返し防止 */
+      white-space: nowrap;
     }
 
-    /* かなり幅が狭い端末向け微調整 */
     @media (max-width: 320px) {
       header h1 {
         font-size: 14px;
       }
       .add-row button {
-        padding: 8px 8px;
+        padding: 5px 8px;
         font-size: 13px;
       }
     }
@@ -223,7 +224,7 @@
 
           const checkbox = document.createElement("input");
           checkbox.type = "checkbox";
-          checkbox.checked = item.done; // 将来の拡張用
+          checkbox.checked = item.done;
 
           const nameSpan = document.createElement("span");
           nameSpan.textContent = item.name;
@@ -269,7 +270,6 @@
       await renderList();
     });
 
-    // Enterキーでも追加したい場合
     inputEl.addEventListener("keydown", async (e) => {
       if (e.key === "Enter") {
         addBtn.click();
@@ -286,4 +286,3 @@
   </script>
 </body>
 </html>
-
