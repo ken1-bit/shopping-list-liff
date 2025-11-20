@@ -98,7 +98,25 @@
       background: #00c200;
       color: #fff;
     }
-  </style>
+    .item-row {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+    .item-row .delete-btn {
+      margin-left: auto;
+      background: none;
+      border: none;
+      font-size: 20px;
+      padding: 4px;
+      cursor: pointer;
+    }
+    .done {
+      text-decoration: line-through;
+      color: gray;
+    }
+</style>
 </head>
 <body>
   <div class="app">
@@ -196,6 +214,7 @@
   </script>
 </body>
 </html>
+
 
 
 
