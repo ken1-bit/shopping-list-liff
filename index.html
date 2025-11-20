@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>マイ買い物リスト（サンプル）</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     body {
       margin: 0;
@@ -120,17 +121,20 @@
     </footer>
   </div>
 
-  <script>
-    // 仮データ（あとで Todoist から取得する部分）
+    <script>
+    // ★ ここにあなたの LIFF ID を入れる（LIFF管理画面に表示されている文字列）
+    const LIFF_ID = "2008535376-WXXwPnrX";
+
+    // 仮のリスト（後でTodoistから取得するように置き換える）
     let items = [
-      { id: 1, name: "牛乳", done: false },
-      { id: 2, name: "卵",   done: true  },
+      { id: 1, name: "牛乳",   done: false },
+      { id: 2, name: "卵",     done: true  },
       { id: 3, name: "食パン", done: false },
     ];
 
-    const listEl = document.getElementById("itemList");
-    const inputEl = document.getElementById("newItemInput");
-    const addBtn = document.getElementById("addBtn");
+    const listEl     = document.getElementById("itemList");
+    const inputEl    = document.getElementById("newItemInput");
+    const addBtn     = document.getElementById("addBtn");
     const refreshBtn = document.getElementById("refreshBtn");
 
     function render() {
@@ -148,7 +152,7 @@
         checkbox.addEventListener("change", () => {
           item.done = checkbox.checked;
           render();
-          // 本番ではここで Todoist API & LINE通知を呼ぶ
+          // ★ 本番ではここで Todoist API & LINE通知を呼ぶ
         });
         listEl.appendChild(li);
       });
@@ -157,22 +161,42 @@
     addBtn.addEventListener("click", () => {
       const name = inputEl.value.trim();
       if (!name) return;
-      const newItem = {
-        id: Date.now(),
-        name,
-        done: false,
-      };
-      items.push(newItem);
+      items.push({ id: Date.now(), name, done: false });
       inputEl.value = "";
       render();
-      // 本番ではここで Todoist API & LINE通知を呼ぶ
+      // ★ 本番ではここで Todoist API & LINE通知を呼ぶ
     });
 
     refreshBtn.addEventListener("click", () => {
       alert("サンプルなので何もしません（本番ではTodoistから再取得）");
     });
 
-    render();
+    // ★ LIFF 初期化
+    async function initLiff() {
+      try {
+        await liff.init({ liffId: LIFF_ID });
+
+        // ログインしていなければログインさせる
+        if (!liff.isLoggedIn()) {
+          liff.login();
+          return;
+        }
+
+        // 必要ならプロフィール取得もできる（後で使う）
+        // const profile = await liff.getProfile();
+        // console.log("LINE user:", profile);
+
+        // 画面描画
+        render();
+      } catch (err) {
+        console.error("LIFF init error", err);
+        alert("LIFFの初期化に失敗しました。ブラウザから直接ではなく、LINEのLIFF URLから開いてください。");
+      }
+    }
+
+    window.addEventListener("load", initLiff);
   </script>
 </body>
 </html>
+
+
