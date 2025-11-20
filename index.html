@@ -2,9 +2,10 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>マイ買い物リスト（V0.2）</title>
+  <title>マイ買い物リスト（V0.3）</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <!-- ★ LIFF SDK はもう使わないので削除しました -->
+
   <style>
     body {
       margin: 0;
@@ -50,29 +51,31 @@
       margin: 0;
       padding: 0;
     }
-    .item {
+    .item-row {
       display: flex;
       align-items: center;
       padding: 10px 16px;
       border-bottom: 1px solid #f0f0f0;
     }
-    .item label {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      cursor: pointer;
-    }
-    .item input[type="checkbox"] {
+    .item-row input[type="checkbox"] {
       width: 20px;
       height: 20px;
+      margin-right: 12px;
     }
-    .item-name {
-      margin-left: 12px;
+    .item-row span.name {
       font-size: 15px;
     }
-    .item.done .item-name {
+    .item-row span.name.done {
       text-decoration: line-through;
       color: #999;
+    }
+    .item-row button.delete-btn {
+      margin-left: auto;
+      background: none;
+      border: none;
+      font-size: 20px;
+      padding: 4px;
+      cursor: pointer;
     }
     footer {
       padding: 10px 16px 16px;
@@ -98,25 +101,7 @@
       background: #00c200;
       color: #fff;
     }
-    .item-row {
-      display: flex;
-      align-items: center;
-      padding: 8px;
-      border-bottom: 1px solid #ddd;
-    }
-    .item-row .delete-btn {
-      margin-left: auto;
-      background: none;
-      border: none;
-      font-size: 20px;
-      padding: 4px;
-      cursor: pointer;
-    }
-    .done {
-      text-decoration: line-through;
-      color: gray;
-    }
-</style>
+  </style>
 </head>
 <body>
   <div class="app">
@@ -137,88 +122,120 @@
     </footer>
   </div>
 
-    <script>
-    // ★ ここにあなたの LIFF ID を入れる（LIFF管理画面に表示されている文字列）
-    const LIFF_ID = "2008535376-WXXwPnrX";
+  <script>
+    const API_BASE = "https://shopping-list-backend-chi.vercel.app/api";
 
-    // 仮のリスト（後でTodoistから取得するように置き換える）
-    let items = [
-      { id: 1, name: "牛乳",   done: false },
-      { id: 2, name: "卵",     done: true  },
-      { id: 3, name: "食パン", done: false },
-    ];
-
-    const listEl     = document.getElementById("itemList");
+    const listEl     = document.getElementById("list");
     const inputEl    = document.getElementById("newItemInput");
     const addBtn     = document.getElementById("addBtn");
     const refreshBtn = document.getElementById("refreshBtn");
 
-    function render() {
-      listEl.innerHTML = "";
-      items.forEach(item => {
-        const li = document.createElement("li");
-        li.className = "item" + (item.done ? " done" : "");
-        li.innerHTML = `
-          <label>
-            <input type="checkbox" ${item.done ? "checked" : ""} />
-            <span class="item-name">${item.name}</span>
-          </label>
-        `;
-        const checkbox = li.querySelector("input[type=checkbox]");
-        checkbox.addEventListener("change", () => {
-          item.done = checkbox.checked;
-          render();
-          // ★ 本番ではここで Todoist API & LINE通知を呼ぶ
-        });
-        listEl.appendChild(li);
+    async function fetchJson(url, options = {}) {
+      const resp = await fetch(url, options);
+      return await resp.json();
+    }
+
+    async function loadItems() {
+      return await fetchJson(`${API_BASE}/items`);
+    }
+
+    async function addItem(name) {
+      return await fetchJson(`${API_BASE}/items`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name })
       });
     }
 
-    addBtn.addEventListener("click", () => {
-      const name = inputEl.value.trim();
-      if (!name) return;
-      items.push({ id: Date.now(), name, done: false });
-      inputEl.value = "";
-      render();
-      // ★ 本番ではここで Todoist API & LINE通知を呼ぶ
-    });
+    async function toggleItem(id, done) {
+      return await fetchJson(`${API_BASE}/toggle`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, done })
+      });
+    }
 
-    refreshBtn.addEventListener("click", () => {
-      alert("サンプルなので何もしません（本番ではTodoistから再取得）");
-    });
+    async function deleteItem(id) {
+      return await fetchJson(`${API_BASE}/delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id })
+      });
+    }
 
-    // ★ LIFF 初期化
-    async function initLiff() {
+    async function renderList() {
+      listEl.innerHTML = "<li style='padding:10px 16px;color:#666;'>読み込み中...</li>";
+
       try {
-        await liff.init({ liffId: LIFF_ID });
-
-        // ログインしていなければログインさせる
-        if (!liff.isLoggedIn()) {
-          liff.login();
+        const data = await loadItems();
+        if (!data.ok) {
+          listEl.innerHTML = "<li style='padding:10px 16px;color:red;'>取得エラー</li>";
+          console.error(data.error);
           return;
         }
 
-        // 必要ならプロフィール取得もできる（後で使う）
-        // const profile = await liff.getProfile();
-        // console.log("LINE user:", profile);
+        listEl.innerHTML = "";
 
-        // 画面描画
-        render();
-      } catch (err) {
-        console.error("LIFF init error", err);
-        alert("LIFFの初期化に失敗しました。ブラウザから直接ではなく、LINEのLIFF URLから開いてください。");
+        data.items.forEach(item => {
+          const li = document.createElement("li");
+          li.className = "item-row";
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.checked = item.done; // 今は常に false だけど将来の拡張用
+
+          const nameSpan = document.createElement("span");
+          nameSpan.textContent = item.name;
+          nameSpan.className = "name" + (item.done ? " done" : "");
+
+          const deleteBtn = document.createElement("button");
+          deleteBtn.textContent = "🗑";
+          deleteBtn.className = "delete-btn";
+
+          checkbox.addEventListener("change", async () => {
+            const newDone = checkbox.checked;
+            await toggleItem(item.id, newDone);
+            await renderList();
+          });
+
+          deleteBtn.addEventListener("click", async () => {
+            if (confirm(`「${item.name}」を削除しますか？`)) {
+              await deleteItem(item.id);
+              await renderList();
+            }
+          });
+
+          li.appendChild(checkbox);
+          li.appendChild(nameSpan);
+          li.appendChild(deleteBtn);
+          listEl.appendChild(li);
+        });
+
+        if (data.items.length === 0) {
+          listEl.innerHTML = "<li style='padding:10px 16px;color:#666;'>リストは空です</li>";
+        }
+      } catch (e) {
+        console.error(e);
+        listEl.innerHTML = "<li style='padding:10px 16px;color:red;'>通信エラー</li>";
       }
     }
 
-    window.addEventListener("load", initLiff);
+    addBtn.addEventListener("click", async () => {
+      const name = inputEl.value.trim();
+      if (!name) return;
+      await addItem(name);
+      inputEl.value = "";
+      await renderList();
+    });
+
+    refreshBtn.addEventListener("click", () => {
+      renderList();
+    });
+
+    // ★ ページ読み込み時にリスト取得
+    document.addEventListener("DOMContentLoaded", () => {
+      renderList();
+    });
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
