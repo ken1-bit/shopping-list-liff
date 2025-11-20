@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>マイ買い物リスト（V0.1）</title>
+  <title>マイ買い物リスト（V0.2）</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
@@ -206,7 +206,7 @@
         render();
       } catch (err) {
         console.error("LIFF init error", err);
-        alert(err);
+        alert("LIFFの初期化に失敗しました。ブラウザから直接ではなく、LINEのLIFF URLから開いてください。");
       }
     }
 
@@ -214,6 +214,7 @@
   </script>
 </body>
 </html>
+
 
 
 
