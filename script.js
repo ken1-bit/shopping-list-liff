@@ -97,9 +97,8 @@ async function refreshList() {
 }
 
 // -----------------------------
-//  LIFF 初期化
+//  ページ表示時にリスト読み込み
 // -----------------------------
-liff.init({ liffId: "2008535376-WXXwPnrX" })
-  .then(() => {
-    refreshList();
-  });
+document.addEventListener("DOMContentLoaded", () => {
+  refreshList();
+});
