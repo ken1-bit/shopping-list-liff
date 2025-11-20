@@ -206,7 +206,7 @@
         render();
       } catch (err) {
         console.error("LIFF init error", err);
-        alert("LIFFの初期化に失敗しました。ブラウザから直接ではなく、LINEのLIFF URLから開いてください。");
+        alert("LIFFの初期化に失敗しました。ブラウザから直接ではなく、LINEのLIFF URLから開いてください。" + err);
       }
     }
 
@@ -214,6 +214,7 @@
   </script>
 </body>
 </html>
+
 
 
 
