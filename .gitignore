@@ -1,0 +1,28 @@
+# --- Dependencies ---
+node_modules/
+
+# --- Environment Variables (Secrets) ---
+# APIキーなどが含まれるため絶対に入れない
+.env
+.env.local
+.env.*.local
+
+# --- Vercel ---
+.vercel/
+
+# --- Build Outputs ---
+dist/
+build/
+
+# --- IDE Settings (JetBrains/WebStorm) ---
+# workspace.xml は個人の作業状態（開いているタブなど）なので除外
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/shelf/
+# 必要に応じて .iml も除外することが多いですが、個人開発なら入れてもOK
+# *.iml
+
+# --- OS Files ---
+.DS_Store
+Thumbs.db
