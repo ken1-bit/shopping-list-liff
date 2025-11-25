@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>マイ買い物リスト（V0.6）</title>
+  <title>マイ買い物リスト(V0.7)</title>
   <meta name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <style>
@@ -15,6 +15,7 @@
     font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     background: #f5f5f5;
     -webkit-text-size-adjust: 100%; /* iOS の自動調整を抑制 */
+    overscroll-behavior-y: none; /* スクロールの跳ね返り防止 */
   }
 
   .app {
@@ -72,10 +73,10 @@
     }
 
     .item-row input[type="checkbox"] {
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
       margin-right: 12px;
-      flex: 0 0 auto;
+      cursor: pointer;
     }
 
     .item-row span.name {
@@ -85,16 +86,18 @@
     }
 
     .item-row span.name.done {
-      text-decoration: line-through;
-      color: #999;
+        text-decoration: line-through;
+        color: #ccc; /* より薄く */
+        opacity: 0.6;
     }
 
     .item-row button.delete-btn {
-      margin-left: 12px;
       background: none;
       border: none;
       font-size: 20px;
-      padding: 4px;
+      padding: 12px; /* 余白を広げて押しやすく */
+      margin-left: 4px; /* 余白が増えた分マージン調整 */
+      color: #ff4444; /* 削除ボタンを赤っぽくして危険性を伝える */
       cursor: pointer;
       flex: 0 0 auto;
     }
